@@ -3,24 +3,24 @@ import dbConnect from '@/utils/mongoose';
 import Course from '@/models/courseModel';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { courseId: string } }
+  _request: NextRequest,
+  context: { params: { courseId: string } }
 ) {
   try {
     await dbConnect();
-    
-    const { courseId } = await params;
-    
+
+    const { courseId } = await context.params;
+
     // Find the course by courseId
     const course = await Course.findOne({ courseId })
-    
+
     if (!course) {
       return NextResponse.json(
         { error: 'Course not found' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json(course);
   } catch (error) {
     console.error('Error fetching course:', error);
