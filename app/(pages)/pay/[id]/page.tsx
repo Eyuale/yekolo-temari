@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import Pay from "@/components/Pay";
 import { useSession } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import {
@@ -95,10 +94,10 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
           callback_url: `${process.env.NEXTAUTH_URL}/verify?courseId=${course?.courseId}&txRef=${tx_ref}`,
         }),
       });
-      
+
       const data = await response.json();
       console.log("Payment response:", data);
-      
+
       // Check if payment was successful and redirect to Chapa checkout
       if (data.responseData?.status === "success" && data.responseData?.data?.checkout_url) {
         window.location.href = data.responseData.data.checkout_url;

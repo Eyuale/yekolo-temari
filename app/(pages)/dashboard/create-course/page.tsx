@@ -182,7 +182,8 @@ const CreateCoursePage = () => {
         throw new Error("Failed to create course");
       }
 
-      const savedCourse = await response.json();
+      // No need to store the response if we're not using it
+      await response.json();
 
        // Clear form and previews
        form.reset();
@@ -192,7 +193,6 @@ const CreateCoursePage = () => {
       // 4. Handle success
       alert("Course created successfully!");
       // Optionally redirect to the course page or dashboard
-      // router.push(`/dashboard/courses/${savedCourse.courseId}`);
     } catch (error) {
       console.error("Error uploading files:", error);
       alert("Error creating course. Please try again.");

@@ -36,7 +36,7 @@ export const options: NextAuthOptions = {
         signIn: "/signin",
     },
     callbacks: {
-        async session({ session, token }) {
+        async session({ session }) {
             return session;
         },
         async jwt({ token, user }) {
