@@ -1,3 +1,4 @@
+import { use } from "react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -37,8 +38,9 @@ async function getCourse(id: string): Promise<Course | null> {
   }
 }
 
-export default async function CoursePage({ params }: { params: { id: string } }) {
-  const course = await getCourse(params.id);
+export default function CoursePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const course = use(getCourse(id));
 
   if (!course) {
     return (
