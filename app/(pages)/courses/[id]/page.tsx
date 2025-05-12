@@ -37,14 +37,11 @@ async function getCourse(id: string): Promise<Course | null> {
   }
 }
 
-// Create a wrapper component to handle the async data fetching
-export default function CoursePage({ params }: { params: { id: string } }) {
-  return <CoursePageContent params={params} />;
-}
-
-// Create an async component for the content
-async function CoursePageContent({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function CoursePage({ params }: { params: Promise<{ id: string }> }) {
+  // Directly use the params without unwrapping with use()
+  // Next.js 15 will handle this correctly
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
   const course = await getCourse(id);
 
   if (!course) {

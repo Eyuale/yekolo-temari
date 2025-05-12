@@ -30,14 +30,15 @@ interface Course {
   teacherId: string;
 }
 
-// Create a wrapper component to handle the client-side rendering
-export default function Page({ params }: { params: { id: string } }) {
-  return <PayPageContent params={params} />;
+// Since this is a client component, we need to handle the params differently
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
+  return <PayPageContent paramsPromise={params} />;
 }
 
 // Client component with the actual implementation
-const PayPageContent = ({ params }: { params: { id: string } }) => {
-  const { id } = params
+const PayPageContent = ({ paramsPromise }: { paramsPromise: Promise<{ id: string }> }) => {
+  // We'll extract the id in useEffect
+  const [id, setId] = useState<string>("");
   const { data: session } = useSession();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,9 +48,15 @@ const PayPageContent = ({ params }: { params: { id: string } }) => {
   const [lastName, setLastName] = useState("");
 
   useEffect(() => {
-    const fetchCourse = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(`/api/courses/${id}`, {
+        // First resolve the params promise to get the id
+        const resolvedParams = await paramsPromise;
+        const courseId = resolvedParams.id;
+        setId(courseId);
+
+        // Then fetch the course data
+        const res = await fetch(`/api/courses/${courseId}`, {
           cache: "no-store",
         });
 
@@ -78,8 +85,8 @@ const PayPageContent = ({ params }: { params: { id: string } }) => {
       setLastName(nameParts[1] || "");
     }
 
-    fetchCourse();
-  }, [id, session]);
+    fetchData();
+  }, [paramsPromise, session]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,7 +129,7 @@ const PayPageContent = ({ params }: { params: { id: string } }) => {
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <Link
-          href={course ? `/courses/${course.courseId}` : "/"}
+          href={course ? `/courses/${course.courseId}` : id ? `/courses/${id}` : "/"}
           className="inline-flex items-center mb-6 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
