@@ -9,7 +9,7 @@ export async function GET(
   try {
     await dbConnect();
     
-    const { courseId } = params;
+    const { courseId } = await params;
     
     // Find the course by courseId
     const course = await Course.findOne({ courseId })
