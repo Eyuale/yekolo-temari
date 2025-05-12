@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useSession } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import {
@@ -30,7 +30,13 @@ interface Course {
   teacherId: string;
 }
 
-const Page = ({ params }: { params: { id: string } }) => {
+// Create a wrapper component to handle the client-side rendering
+export default function Page({ params }: { params: { id: string } }) {
+  return <PayPageContent params={params} />;
+}
+
+// Client component with the actual implementation
+const PayPageContent = ({ params }: { params: { id: string } }) => {
   const { id } = params
   const { data: session } = useSession();
   const [course, setCourse] = useState<Course | null>(null);
@@ -214,5 +220,3 @@ const Page = ({ params }: { params: { id: string } }) => {
     </div>
   );
 };
-
-export default Page;

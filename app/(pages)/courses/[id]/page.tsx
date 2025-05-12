@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import { use } from "react";
 
 // Define the Course interface
 interface Course {
@@ -37,7 +38,13 @@ async function getCourse(id: string): Promise<Course | null> {
   }
 }
 
-export default async function CoursePage({ params }: { params: { id: string } }) {
+// Create a wrapper component to handle the async data fetching
+export default function CoursePage({ params }: { params: { id: string } }) {
+  return <CoursePageContent params={params} />;
+}
+
+// Create an async component for the content
+async function CoursePageContent({ params }: { params: { id: string } }) {
   const { id } = params;
   const course = await getCourse(id);
 
