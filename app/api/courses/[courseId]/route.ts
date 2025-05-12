@@ -4,12 +4,14 @@ import Course from '@/models/courseModel';
 
 export async function GET(
   _request: NextRequest,
-  context: { params: { courseId: string } }
+  context: { params: Promise<{ courseId: string }> }
 ) {
   try {
     await dbConnect();
 
-    const { courseId } = await context.params;
+    // Resolve the params promise
+    const params = await context.params;
+    const { courseId } = params;
 
     // Find the course by courseId
     const course = await Course.findOne({ courseId })
