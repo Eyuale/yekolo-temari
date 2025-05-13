@@ -19,7 +19,7 @@ interface Course {
 
 async function getCourse(id: string): Promise<Course | null> {
   try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/courses/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/${id}`, {
       cache: 'no-store' // Disable caching to always get fresh data
     });
 

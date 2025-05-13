@@ -104,7 +104,7 @@ const PayPageContent = ({ paramsPromise }: { paramsPromise: Promise<{ id: string
           first_name: firstName,
           last_name: lastName,
           mobile: mobile,
-          callback_url: `${process.env.NEXTAUTH_URL}/verify?courseId=${course?.courseId}&txRef=${tx_ref}`,
+          callback_url: `${process.env.NEXT_PUBLIC_API_URL}/verify?courseId=${course?.courseId}&txRef=${tx_ref}`,
         }),
       });
 

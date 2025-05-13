@@ -47,12 +47,12 @@ const Pay = ({
         <input
           type="hidden"
           name="callback_url"
-          value={`${process.env.NEXTAUTH_URL}/api/payment/callback?courseId=${courseId}&txRef=${`${title}-${Date.now()}`}`}
+          value={`${process.env.NEXT_PUBLIC_API_URL}/api/payment/callback?courseId=${courseId}&txRef=${`${title}-${Date.now()}`}`}
         />
         <input
           type="hidden"
           name="return_url"
-          value={`${process.env.NEXTAUTH_URL}/courses/${courseId}?payment=success`}
+          value={`${process.env.NEXT_PUBLIC_API_URL}/courses/${courseId}?payment=success`}
         />
         <input type="hidden" name="meta[courseId]" value={courseId} />
         <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">

@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       tx_ref: tx_ref,
       mobile: mobile,
       currency: "ETB",
-      callback_url: `${process.env.NEXTAUTH_URL}/verify?courseId=${courseId}&txRef=${tx_ref}`,
+      callback_url: `${process.env.NEXT_PUBLIC_API_URL}/verify?courseId=${courseId}&txRef=${tx_ref}`,
     }
 
     console.log(body.callback_url)
