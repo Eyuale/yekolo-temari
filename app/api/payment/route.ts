@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const {
-      courseId,
+      // courseId,
       amount, 
       tx_ref,
       email,
