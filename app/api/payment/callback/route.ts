@@ -3,13 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   console.log("working")
   try {
-    // Extract query parameters from the URL
-    const searchParams = req.nextUrl.searchParams;
-    const tx_ref = searchParams.get('tx_ref');
-    const ref_id = searchParams.get('ref_id');
-    const status = searchParams.get('status');
-
+    const { tx_ref, ref_id, status } = await req.json() as { tx_ref: string, ref_id: string, status: string };
     console.log(tx_ref, ref_id, status);
+    
     // Validate required parameters
     if (!tx_ref || !ref_id || !status) {
       return NextResponse.json(
