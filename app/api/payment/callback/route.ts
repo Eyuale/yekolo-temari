@@ -9,6 +9,9 @@ export async function GET(req: NextRequest) {
     const ref_id = searchParams.get('ref_id');
     const status = searchParams.get('status');
 
+    console.log("All parameters:", Object.fromEntries(searchParams.entries()));
+    
+
     // Validate required parameters
     if (!trx_ref || !ref_id || !status) {
       return NextResponse.json(
