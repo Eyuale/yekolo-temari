@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   try {
     // Extract query parameters from the URL
     const searchParams = req.nextUrl.searchParams;
-    const trx_ref = searchParams.get('trx_ref');
+    const trx_ref = searchParams.get('tx_ref');
     const ref_id = searchParams.get('ref_id');
     const status = searchParams.get('status');
 
