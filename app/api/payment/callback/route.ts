@@ -1,42 +1,41 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
 
-export async function GET(req: NextRequest) {
-  console.log("working")
-  try {
-    // Extract query parameters from the URL
-    const searchParams = req.nextUrl.searchParams;
-    const trx_ref = searchParams.get('tx_ref');
-    const ref_id = searchParams.get('ref_id');
-    const status = searchParams.get('status');
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'GET') {
+    const { trx_ref, ref_id, status } = req.query as { trx_ref?: string; ref_id?: string; status?: string };
 
-    console.log("All parameters:", Object.fromEntries(searchParams.entries()));
-    
+    // Log the received data for debugging
+    console.log('Received callback data:', req.query);
 
-    // Validate required parameters
     if (!trx_ref || !ref_id || !status) {
-      return NextResponse.json(
-        { error: 'Missing required parameters' },
-        { status: 400 }
-      );
+      return res.status(400).json({ message: 'Missing request content' });
     }
 
-    // Log for debugging
-    console.log(`Received callback: trx_ref=${trx_ref}, ref_id=${ref_id}, status=${status}`);
+    try {
+      // Verify the transaction using Chapa's API
+      const verificationResponse = await axios.get(`https://api.chapa.co/v1/transaction/verify/${trx_ref}`, {
+        headers: { Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}` },
+      });
 
-    // Process the payment data (e.g., update database)
-    // Example: await updatePaymentStatus(trx_ref, status);
-    // Replace with your actual logic to handle the transaction
+      const verificationData = verificationResponse.data;
 
-    // Acknowledge the callback
-    return NextResponse.json(
-      { message: 'Callback received' },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error('Error handling callback:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+      // Process based on verification result
+      if (verificationData.status === 'success') {
+        // Update your database or perform other actions
+        console.log('Transaction verified successfully:', verificationData);
+      } else {
+        console.log('Transaction verification failed:', verificationData);
+      }
+
+      // Acknowledge the callback
+      res.status(200).json({ message: 'Callback received and processed' });
+    } catch (error) {
+      console.error('Error verifying transaction:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  } else {
+    res.setHeader('Allow', ['GET']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

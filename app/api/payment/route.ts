@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     const body = {
       amount: amount,
       email: email,
-      fist_name: first_name,
+      first_name: first_name,
       last_name: last_name,
       tx_ref: tx_ref,
       mobile: mobile,
