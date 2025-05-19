@@ -109,7 +109,7 @@ export default async function LearnPage({
         {isNewlyEnrolled && (
           <div className="mb-6 p-4 bg-green-100 border border-green-300 rounded-md">
             <p className="text-green-800 font-medium">
-              🎉 Welcome to the course! You have successfully enrolled in "{course.title}".
+              🎉 Welcome to the course! You have successfully enrolled in &quot;{course.title}&quot;.
             </p>
           </div>
         )}
