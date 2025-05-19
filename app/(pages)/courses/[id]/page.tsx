@@ -1,8 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { options } from "@/app/api/auth/[...nextauth]/options";
 
 // Define the Course interface
 interface Course {
@@ -15,6 +17,11 @@ interface Course {
   price: number;
   teacherName: string;
   teacherId: string;
+  enrollments: Array<{
+    userId: string;
+    enrolledAt?: Date;
+    paymentReference?: string;
+  }>;
 }
 
 async function getCourse(id: string): Promise<Course | null> {
@@ -37,12 +44,30 @@ async function getCourse(id: string): Promise<Course | null> {
   }
 }
 
-export default async function CoursePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function CoursePage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: { payment?: string }
+}) {
   // Directly use the params without unwrapping with use()
   // Next.js 15 will handle this correctly
   const resolvedParams = await params;
   const { id } = resolvedParams;
   const course = await getCourse(id);
+
+  // Check if this is a redirect after payment
+  const isPaymentSuccess = searchParams.payment === 'success';
+
+  // Get the current user session
+  const session = await getServerSession(options);
+  const userEmail = session?.user?.email;
+
+  // Check if the user is already enrolled in the course
+  const isEnrolled = userEmail && course?.enrollments?.some(
+    enrollment => enrollment.userId === userEmail
+  );
 
   if (!course) {
     return (
@@ -65,6 +90,14 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
       <Navbar />
 
       <main className="container mx-auto px-4 py-8">
+        {isPaymentSuccess && (
+          <div className="mb-6 p-4 bg-green-100 border border-green-300 rounded-md">
+            <p className="text-green-800 font-medium">
+              🎉 Payment successful! You are now enrolled in this course.
+            </p>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Course Details - Left Column (2/3 width on large screens) */}
           <div className="lg:col-span-2 space-y-6">
@@ -99,12 +132,20 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
           <div className="lg:col-span-1">
             <div className="bg-card rounded-lg border shadow-sm p-6 sticky top-4">
               <div className="text-3xl font-bold mb-4">${course.price}</div>
-              <Link href={`/pay/${course.courseId}`}>
-              <Button className="w-full mb-4">
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Enroll Now
-              </Button>
-              </Link>
+
+              {isEnrolled ? (
+                <Button className="w-full mb-4 bg-green-600 hover:bg-green-700" disabled>
+                  <CheckCircle className="mr-2 h-4 w-4" />
+                  Already Enrolled
+                </Button>
+              ) : (
+                <Link href={`/pay/${course.courseId}`}>
+                  <Button className="w-full mb-4">
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    Enroll Now
+                  </Button>
+                </Link>
+              )}
               <div className="text-sm text-muted-foreground">
                 <p className="mb-2">This course includes:</p>
                 <ul className="list-disc pl-5 space-y-1">

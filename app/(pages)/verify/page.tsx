@@ -51,7 +51,8 @@ const VerifyContent = () => {
           alert("Error verifying payment. Please try again.");
         } else {
           console.log("Payment verified successfully:", data);
-          alert("Payment verified successfully.");
+          // Redirect to the course page automatically
+          router.push(`/courses/${courseId}?payment=success`);
         }
       } catch (error) {
         console.error("Error:", error);
