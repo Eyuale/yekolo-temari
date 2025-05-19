@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const {
-      // courseId,
+      courseId,
       amount, 
       tx_ref,
       email,
@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
       mobile: mobile,
       currency: "ETB",
       callback_url: `${process.env.NEXT_PUBLIC_API_URL}/api/payment/callback`,
+      return_url: `${process.env.NEXT_PUBLIC_API_URL}/payment-success?courseId=${courseId}&status=success`
     }
 
     console.log(body.callback_url)
