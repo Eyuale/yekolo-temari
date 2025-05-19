@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Could not determine courseId" }, { status: 200 });
     }
 
+    console.log(courseId)
     // Find the course by courseId
     const course = await Course.findOne({ courseId });
 
