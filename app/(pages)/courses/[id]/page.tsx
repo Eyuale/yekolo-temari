@@ -49,7 +49,7 @@ export default async function CoursePage({
   searchParams
 }: {
   params: Promise<{ id: string }>;
-  searchParams: { payment?: string }
+  searchParams: Promise<{ payment?: string }>
 }) {
   // Directly use the params without unwrapping with use()
   // Next.js 15 will handle this correctly
@@ -57,8 +57,11 @@ export default async function CoursePage({
   const { id } = resolvedParams;
   const course = await getCourse(id);
 
+  // Resolve searchParams promise
+  const resolvedSearchParams = await searchParams;
+
   // Check if this is a redirect after payment
-  const isPaymentSuccess = searchParams.payment === 'success';
+  const isPaymentSuccess = resolvedSearchParams.payment === 'success';
 
   // Get the current user session
   const session = await getServerSession(options);
