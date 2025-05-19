@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import rawBody from "raw-body";
 
 export async function GET(req: NextRequest) {
   console.log("working")
