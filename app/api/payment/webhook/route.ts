@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
       tx_ref,
       email,
       status,
-      meta
     } = body;
 
     // Verify that the payment was successful
@@ -25,36 +24,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Payment not successful" }, { status: 200 });
     }
 
-    // Extract courseId from tx_ref (assuming format: "CourseName-timestamp")
-    // We need to find the course based on the tx_ref
-    // First, try to get courseId from meta if available
-    let courseId;
-
-    if (meta && meta.courseId) {
-      courseId = meta.courseId;
-    } else {
-      // If meta is not available, we need to query all courses to find the one with matching tx_ref
-      // This is a fallback approach and not ideal for production
-      const courses = await Course.find();
-
-      // Find the course that has an enrollment with this tx_ref
-      for (const course of courses) {
-        // We'll use the tx_ref to identify the transaction
-        // The tx_ref format is typically "Natan-timestamp" or "CourseName-timestamp"
-        // We'll need to extract the courseId from our database
-
-        // For now, we'll just use the first course found (this is a simplification)
-        courseId = course.courseId;
-        break;
-      }
-    }
-
-    if (!courseId) {
-      console.log("Could not determine courseId from webhook data");
-      return NextResponse.json({ message: "Could not determine courseId" }, { status: 200 });
-    }
-
-    console.log(courseId)
+    const courseId = tx_ref.split("-")[0];
+    
     // Find the course by courseId
     const course = await Course.findOne({ courseId });
 

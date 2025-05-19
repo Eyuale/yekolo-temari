@@ -70,7 +70,7 @@ const PayPageContent = ({ paramsPromise }: { paramsPromise: Promise<{ id: string
 
         const courseData = await res.json();
         setCourse(courseData);
-        setTxRef(`${courseData?.title}-${Date.now()}`);
+        setTxRef(`${courseId}-${Date.now()}`);
       } catch (error) {
         console.error("Error:", error);
         setCourse(null);
