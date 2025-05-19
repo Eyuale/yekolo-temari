@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, CheckCircle } from "lucide-react";
+import { ShoppingCart, CheckCircle, Play } from "lucide-react";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
@@ -49,7 +49,7 @@ export default async function CoursePage({
   searchParams
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ payment?: string }>
+  searchParams: Promise<{ payment?: string, access?: string }>
 }) {
   // Directly use the params without unwrapping with use()
   // Next.js 15 will handle this correctly
@@ -62,6 +62,9 @@ export default async function CoursePage({
 
   // Check if this is a redirect after payment
   const isPaymentSuccess = resolvedSearchParams.payment === 'success';
+
+  // Check if this is a redirect after access denied
+  const isAccessDenied = resolvedSearchParams.access === 'denied';
 
   // Get the current user session
   const session = await getServerSession(options);
@@ -97,6 +100,14 @@ export default async function CoursePage({
           <div className="mb-6 p-4 bg-green-100 border border-green-300 rounded-md">
             <p className="text-green-800 font-medium">
               🎉 Payment successful! You are now enrolled in this course.
+            </p>
+          </div>
+        )}
+
+        {isAccessDenied && (
+          <div className="mb-6 p-4 bg-red-100 border border-red-300 rounded-md">
+            <p className="text-red-800 font-medium">
+              ⚠️ Access denied. You need to enroll in this course to access the learning materials.
             </p>
           </div>
         )}
@@ -137,10 +148,18 @@ export default async function CoursePage({
               <div className="text-3xl font-bold mb-4">${course.price}</div>
 
               {isEnrolled ? (
-                <Button className="w-full mb-4 bg-green-600 hover:bg-green-700" disabled>
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Already Enrolled
-                </Button>
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    <span className="text-sm text-green-600">You are enrolled in this course</span>
+                  </div>
+                  <Link href={`/learn/${course.courseId}`}>
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                      <Play className="mr-2 h-4 w-4" />
+                      Start Learning
+                    </Button>
+                  </Link>
+                </div>
               ) : (
                 <Link href={`/pay/${course.courseId}`}>
                   <Button className="w-full mb-4">

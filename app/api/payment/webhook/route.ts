@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     const courseId = tx_ref.split("-")[0];
-    
+
     // Find the course by courseId
     const course = await Course.findOne({ courseId });
 
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     // The frontend should handle the redirect after payment completion
     return NextResponse.json({
       message: "Webhook processed successfully",
-      redirect: `/courses/${courseId}?payment=success`
+      redirect: `/learn/${courseId}?enrolled=true`
     }, { status: 200 });
 
   } catch (error) {
