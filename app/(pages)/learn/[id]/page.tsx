@@ -134,7 +134,15 @@ export default async function LearnPage({
 
             {/* Video Player */}
             <div className="rounded-lg overflow-hidden border">
-              <VideoPlayer videoKey={course.video} />
+              {course.video ? (
+                <VideoPlayer videoKey={course.video} />
+              ) : (
+                <div className="flex items-center justify-center bg-black aspect-video">
+                  <div className="text-white text-center p-4">
+                    <p>No video content available for this course yet.</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>

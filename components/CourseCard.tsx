@@ -25,7 +25,7 @@ export function CourseCard({
         <CardHeader className="p-0">
           <div className="relative aspect-video">
             <Image
-              src={`https://${process.env.NEXT_PUBLIC_S3_BUCKET_NAME}.s3.amazonaws.com/${image}`}
+              src={`${process.env.DISTRIBUTION_DOMAIN_NAME}/${image}`}
               alt={title}
               fill
               className="object-cover"
