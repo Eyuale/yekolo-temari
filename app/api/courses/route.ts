@@ -4,9 +4,23 @@ import Course from '@/models/courseModel';
 import { getServerSession } from 'next-auth';
 import { options } from '../auth/[...nextauth]/options';
 
-export async function GET(){
+export async function GET(req: Request, { params: { userId} }: { params: { userId: string } }){
+  const session = await getServerSession(options);
+  if(!session){
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  if(session.user?.email !== userId){
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  
   try {
     await dbConnect();
+    if(userId){
+      const courses = await Course.find({ teacherId: userId })
+        .sort({ createdAt: -1 })
+  
+      return NextResponse.json(courses);
+    }
     const courses = await Course.find()
       .sort({ createdAt: -1 })
       .select('courseId title description image price teacherName');
