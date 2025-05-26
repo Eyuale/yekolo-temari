@@ -23,7 +23,7 @@ const Navbar = () => {
   return (
     <div className="flex flex-row justify-around py-3 bg-sidebar border-1 border-gray-200">
       <div>
-        <Link href="/" className="font-bold font-[40px]">Yekolotemari</Link>
+        <Link href="/" className="font-bold font-[40px]">Yekolo-temari</Link>
       </div>
       <div>
         {session ? (
