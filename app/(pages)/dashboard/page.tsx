@@ -21,7 +21,7 @@ async function getCourses(): Promise<Course[]> {
   const session = await getServerSession(options);
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users/${session?.user?.email}/courses`,
+      `${process.env.NEXTAUTH_URL}/api/users/${session?.user?.email}/courses`,
       {
         cache: "no-store", // Disable caching to always get fresh data
       }
